@@ -34,7 +34,20 @@ public class WaterSortSearch extends GenericSearch {
 
     @Override
     public boolean isGoalState(Object state) {
-        return false;
+        List<Stack<Character>> currState = (List<Stack<Character>>) state;
+        for(Stack<Character> bottle: currState){
+            if(!bottle.isEmpty() && !containsSameColor(bottle))
+                return false;
+        }
+        return true;
+    }
+    private boolean containsSameColor(Stack<Character> bottle){
+        Character color = bottle.peek();
+        for(Character c: bottle){
+            if(!color.equals(c))
+                return false;
+        }
+        return true;
     }
     @Override
     public List<Node> expand(Node node) {
