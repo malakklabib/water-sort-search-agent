@@ -73,7 +73,8 @@ public class WaterSortSearch extends GenericSearch {
                 if(layersPoured > 0){
                     String action = "pour_" + i + "_" + j;
                     int newDepth = node.getDepth() + 1;
-                    Node child = new Node(newState, node, action, newDepth, layersPoured);
+                    int newCost = node.getPathCost() + layersPoured;
+                    Node child = new Node(newState, node, action, newDepth, newCost);
                     children.add(child);
                 }
             }
