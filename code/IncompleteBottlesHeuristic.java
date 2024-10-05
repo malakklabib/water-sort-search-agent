@@ -38,8 +38,7 @@ public class IncompleteBottlesHeuristic implements Heuristic {
         int numLayers = 0;  // Number of non-empty layers in the bottle
 
         for (Character color : bottle) {
-            if (color == 'e')
-                break;    // All layers following an empty layer are also empty and require no processing
+            if (color == 'e') break;    // All layers following an empty layer are also empty and require no processing
             numLayers++;
         }
 

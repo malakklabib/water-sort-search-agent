@@ -81,39 +81,4 @@ public class MostSeparatedColorHeuristic implements Heuristic {
 
         return numSeparations - 1;
     }
-
-    public static void main(String[] args) {
-        Stack<Character> bottle_1 = new Stack<>();
-        Stack<Character> bottle_2 = new Stack<>();
-        Stack<Character> bottle_3 = new Stack<>();
-        List<Stack<Character>> state = new ArrayList<>();
-
-        MostSeparatedColorHeuristic h = new MostSeparatedColorHeuristic();
-
-        bottle_1.push('R');
-        bottle_1.push('B');
-        bottle_1.push('e');
-
-        bottle_2.push('G');
-        bottle_2.push('e');
-        bottle_2.push('e');
-
-        bottle_3.push('G');
-        bottle_3.push('G');
-        bottle_3.push('e');
-
-        state.add(bottle_1);
-        state.add(bottle_2);
-        state.add(bottle_3);
-
-        Node node = new Node(state, null, "", 0, 0);
-//        h.computeMemberships(state);
-//
-//        for (Map.Entry<Character, HashSet<Integer>> entry : h.membership.entrySet()) {
-//            char key = entry.getKey();
-//            HashSet<Integer> values = entry.getValue();
-//            System.out.println("Key: " + key + ", Values: " + values);
-//        }
-        System.out.println(h.evaluate(node));
-    }
 }
