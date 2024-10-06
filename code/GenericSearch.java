@@ -8,11 +8,11 @@ public abstract class GenericSearch {
     public abstract Object getInitialState(String problem);
     public abstract boolean isGoalState(Object state);
     public abstract List<Node> expand(Node node);
-    public Node search(String problem, String strategy) throws Exception{
+    public Node search(String problem, String strategy, Integer cutoff) throws Exception{
         Set<Object> seen = new HashSet<>();
         Object initState = getInitialState(problem);
         Node root =  new Node(initState, null, null, 0, 0);
-        SearchStrategy queue = makeQueue(strategy);
+        SearchStrategy queue = makeQueue(strategy,cutoff);
         queue.add(root);
 
         while(!queue.isEmpty()){
@@ -32,5 +32,5 @@ public abstract class GenericSearch {
         return null;
     }
 
-    public abstract SearchStrategy makeQueue(String strategy) throws Exception;
+    public abstract SearchStrategy makeQueue(String strategy, Integer cutoff) throws Exception;
 }

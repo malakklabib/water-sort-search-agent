@@ -6,7 +6,18 @@ public class WaterSortSearch extends GenericSearch {
     private int bottleCapacity;
     public static String solve(String initialState, String strategy, boolean visualize) throws Exception {
         WaterSortSearch waterSortSearch = new WaterSortSearch();
-        Node goalNode = waterSortSearch.search(initialState, strategy);
+        Node goalNode;
+        if(strategy.equals("ID")){
+            int depth = 0;
+            while(true){
+                goalNode = waterSortSearch.search(initialState, strategy, depth);
+                if(goalNode != null)
+                    break;
+                depth++;
+            }
+        }else{
+            goalNode = waterSortSearch.search(initialState, strategy,null);
+        }
         // backtrack using goalNode and save operands to a string plan,
         // sum up total cost and save to pathCost,
         // count num of nodes expanded during search and save to nodesExpanded
@@ -92,10 +103,11 @@ public class WaterSortSearch extends GenericSearch {
     }
 
     @Override
-    public SearchStrategy makeQueue(String strategy) throws Exception {
+    public SearchStrategy makeQueue(String strategy, Integer cutoff) throws Exception {
         return switch (strategy) {
             case "BF" -> new BreadthFirstSearch();
-            case "DF", "ID" -> new DepthFirstSearch();
+            case "DF" -> new DepthFirstSearch();
+            case "ID" -> new DepthLimitedSearch(cutoff);
             case "UC" -> new UniformCostSearch();
             case "GR1", "GR2" -> new GreedySearch(Character.getNumericValue(strategy.charAt(2)));
             case "AS1", "AS2" -> new AStarSearch(Character.getNumericValue(strategy.charAt(2)));
