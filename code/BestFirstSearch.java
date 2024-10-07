@@ -3,9 +3,9 @@ package code;
 import java.util.*;
 
 public abstract class BestFirstSearch implements SearchStrategy {
-    PriorityQueue<Node> pq;
+    private PriorityQueue<Node> pq;
 
-    Heuristic heuristic; // `Heuristic` is an interface that declares a method: `evaluate(Node) -> int`
+    private Heuristic heuristic; // `Heuristic` is an interface that declares a method: `evaluate(Node) -> int`
     // To be implemented by specific classes that provide different behaviors for `evaluate`
 
     // Changed arg `int heuristic` to `heuristic*Id*` to avoid confusing with newly added instance variable of same name
@@ -37,4 +37,8 @@ public abstract class BestFirstSearch implements SearchStrategy {
     }
 
     public abstract Comparator<Node> makeComparator();
+
+    public Heuristic getHeuristic() {
+        return heuristic;
+    }
 }

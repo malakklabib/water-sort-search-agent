@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class GenericSearch {
+    private int expandedNodes;
+
     public abstract Object getInitialState(String problem);
     public abstract boolean isGoalState(Object state);
     public abstract List<Node> expand(Node node);
@@ -14,6 +16,7 @@ public abstract class GenericSearch {
         Node root =  new Node(initState, null, null, 0, 0);
         SearchStrategy queue = makeQueue(strategy,cutoff);
         queue.add(root);
+        expandedNodes = 0;
 
         while(!queue.isEmpty()){
             Node currNode = queue.remove();
@@ -23,9 +26,10 @@ public abstract class GenericSearch {
                 return currNode;
 
             seen.add(currState);
+            expandedNodes++;
 
             for(Node child : expand(currNode)){
-                if(!seen.contains(child))
+                if(!seen.contains(child.getState()))
                     queue.add(child);
             }
         }
@@ -33,4 +37,8 @@ public abstract class GenericSearch {
     }
 
     public abstract SearchStrategy makeQueue(String strategy, Integer cutoff) throws Exception;
+
+    public int getExpandedNodes() {
+        return expandedNodes;
+    }
 }

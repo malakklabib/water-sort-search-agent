@@ -13,7 +13,7 @@ public class AStarSearch extends BestFirstSearch {
     @Override
     public Comparator<Node> makeComparator() {
         return (n1, n2) -> Integer.compare(
-                heuristic.evaluate(n1) + n1.getPathCost(), heuristic.evaluate(n2) + n2.getPathCost());
+                getHeuristic().evaluate(n1) + n1.getPathCost(), getHeuristic().evaluate(n2) + n2.getPathCost());
     }
 
 }

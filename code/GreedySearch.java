@@ -11,6 +11,6 @@ public class GreedySearch extends BestFirstSearch {
     // Nodes are compared using f(n) = h(n)
     @Override
     public Comparator<Node> makeComparator() {
-        return (n1, n2) -> Integer.compare(heuristic.evaluate(n1), heuristic.evaluate(n2));
+        return (n1, n2) -> Integer.compare(getHeuristic().evaluate(n1), getHeuristic().evaluate(n2));
     }
 }
