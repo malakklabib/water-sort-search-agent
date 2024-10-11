@@ -7,21 +7,21 @@ public class Bottle {
     private Stack<Character> content;
     private int bottleCapacity;
 
-    public Bottle(int bottleCapacity){
+    public Bottle(int bottleCapacity) {
         content = new Stack<>();
         this.bottleCapacity = bottleCapacity;
     }
 
-    public Bottle(Stack<Character> content, int bottleCapacity){
+    public Bottle(Stack<Character> content, int bottleCapacity) {
         this.content = content;
         this.bottleCapacity = bottleCapacity;
     }
 
-    public Character peek(){
+    public Character peek() {
         return content.peek();
     }
 
-    public void push(Character c){
+    public void push(Character c) {
         content.push(c);
     }
 
@@ -29,11 +29,11 @@ public class Bottle {
         return content.pop();
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return content.isEmpty();
     }
 
-    public boolean isFull(){
+    public boolean isFull() {
         return bottleCapacity == content.size();
     }
 
@@ -46,7 +46,7 @@ public class Bottle {
         return true;
     }
 
-    public Bottle clone(){
+    public Bottle clone() {
         return new Bottle((Stack<Character>) content.clone(), bottleCapacity);
     }
 
@@ -58,7 +58,7 @@ public class Bottle {
         return content.size();
     }
 
-    public Character getBottomLayer(){
+    public Character getBottomLayer() {
         return content.get(0);
     }
 
@@ -73,6 +73,24 @@ public class Bottle {
     @Override
     public int hashCode() {
         return Objects.hash(bottleCapacity, content);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("╔═══════╗\n"); // Top of the bottle
+
+        for (int i = content.size() - 1; i >= 0; i--) { // Reverse to show top of the bottle at the top
+            sb.append("║   ").append(content.get(i)).append("   ║\n"); // Add each color inside the bottle
+        }
+
+        // Add empty spaces for unfilled parts of the bottle (assume max height is 4 for this example)
+        for (int i = 0; i < 4 - content.size(); i++) {
+            sb.append("║       ║\n");
+        }
+
+        sb.append("╚═══════╝"); // Bottom of the bottle
+        return sb.toString();
     }
 
 }
