@@ -43,8 +43,6 @@ public class MostSeparatedColorHeuristic implements Heuristic {
     public void computeMembershipPerBottle(Bottle bottle, int bottleId) {
         HashSet<Integer> bottleIds; // A set is used to avoid duplicate IDs
         for (Character layer : bottle.getContent()) {
-            if (layer == 'e')   // Terminate whenever an empty layer is found
-                break;
             if (membership.containsKey(layer)) {    // An entry for this color already exists
                 // Get the set containing the IDs of the bottle of which this color is a member
                 bottleIds = membership.get(layer);

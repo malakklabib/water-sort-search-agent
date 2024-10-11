@@ -1,46 +1,39 @@
 package code;
 
-import java.util.ArrayList;
-public class Bottle {
-    private ArrayList<Character> content;
-    private int top = -1;
+import java.util.Stack;
 
-    public Bottle(){
-        content = new ArrayList<>();
+public class Bottle {
+    private Stack<Character> content;
+    private int bottleCapacity;
+
+    public Bottle(int bottleCapacity){
+        content = new Stack<>();
+        this.bottleCapacity = bottleCapacity;
     }
-    public Bottle(ArrayList<Character> content){
+
+    public Bottle(Stack<Character> content, int bottleCapacity){
         this.content = content;
+        this.bottleCapacity = bottleCapacity;
     }
 
     public Character peek(){
-        if(top == -1)
-            return 'e';
-
-        return content.get(top);
+        return content.peek();
     }
 
     public void push(Character c){
-        if(c == 'e')
-            content.add('e');
-        else {
-            top++;
-            content.set(top, c);
-        }
+        content.push(c);
     }
 
-    public Character pop(){
-        Character c = peek();
-        content.set(top, 'e');
-        top--;
-        return c;
+    public Character pop() {
+        return content.pop();
     }
 
     public boolean isEmpty(){
-        return peek() == 'e';
+        return content.isEmpty();
     }
 
     public boolean isFull(){
-        return top+1 == content.size();
+        return bottleCapacity == content.size();
     }
 
     public boolean containsSameColor() {
@@ -53,16 +46,15 @@ public class Bottle {
     }
 
     public Bottle clone(){
-        ArrayList<Character> newContent = (ArrayList<Character>) content.clone();
-        return new Bottle(newContent);
+        return new Bottle((Stack<Character>) content.clone(), bottleCapacity);
     }
 
-    public ArrayList<Character> getContent() {
+    public Stack<Character> getContent() {
         return content;
     }
 
     public int getSize() {
-        return top + 1;
+        return content.size();
     }
 
     public Character getBottomLayer(){

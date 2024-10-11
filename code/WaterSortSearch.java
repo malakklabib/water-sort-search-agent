@@ -43,10 +43,11 @@ public class WaterSortSearch extends GenericSearch {
         List<Bottle> bottles = new ArrayList<>();
         for (int i = 2; i < numBottles + 2; i++) {
             String[] colors = params[i].split(",");
-            Bottle bottle = new Bottle();
+            Bottle bottle = new Bottle(bottleCapacity);
             for (int j = bottleCapacity - 1; j >= 0; j--) {
                 char color = colors[j].charAt(0);
-                bottle.push(color);
+                if(color!='e')
+                    bottle.push(color);
             }
             bottles.add(bottle);
         }
@@ -72,13 +73,13 @@ public class WaterSortSearch extends GenericSearch {
                 continue;
 
             for (int j = 0; j < currState.size(); j++) {
-                if(j == i || currState.get(i).isFull())
+                if(j == i || currState.get(j).isFull())
                     continue;
 
                 int layersPoured = 0;
                 List<Bottle> newState = currState.stream().map(Bottle::clone).collect(Collectors.toList());
                 Bottle iBottle = newState.get(i), jBottle = newState.get(j);
-                while (!iBottle.isEmpty() && jBottle.isEmpty() || jBottle.peek().equals(iBottle.peek())) {
+                while (!iBottle.isEmpty() && (jBottle.isEmpty() || jBottle.peek().equals(iBottle.peek()))) {
                     Character color = iBottle.pop();
                     jBottle.push(color);
                     layersPoured++;
