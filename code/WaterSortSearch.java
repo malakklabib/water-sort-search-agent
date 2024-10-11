@@ -1,9 +1,9 @@
 package code;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class WaterSortSearch extends GenericSearch {
-    private int bottleCapacity;
 
     public static String solve(String initialState, String strategy, boolean visualize) throws Exception {
         WaterSortSearch waterSortSearch = new WaterSortSearch();
@@ -35,18 +35,18 @@ public class WaterSortSearch extends GenericSearch {
     }
 
     @Override
-    public List<Stack<Character>> getInitialState(String problem) {
+    public List<Bottle> getInitialState(String problem) {
         String[] params = problem.split(";");
         int numBottles = Integer.parseInt(params[0]);
-        bottleCapacity = Integer.parseInt(params[1]);
+        int bottleCapacity = Integer.parseInt(params[1]);
 
-        List<Stack<Character>> bottles = new ArrayList<>();
+        List<Bottle> bottles = new ArrayList<>();
         for (int i = 2; i < numBottles + 2; i++) {
             String[] colors = params[i].split(",");
-            Stack<Character> bottle = new Stack<>();
+            Bottle bottle = new Bottle();
             for (int j = bottleCapacity - 1; j >= 0; j--) {
                 char color = colors[j].charAt(0);
-                push(bottle, color);
+                bottle.push(color);
             }
             bottles.add(bottle);
         }
@@ -55,75 +55,32 @@ public class WaterSortSearch extends GenericSearch {
 
     @Override
     public boolean isGoalState(Object state) {
-        List<Stack<Character>> currState = (List<Stack<Character>>) state;
-        for (Stack<Character> bottle : currState) {
-            if (!isEmpty(bottle) && !containsSameColor(bottle))
+        List<Bottle> currState = (List<Bottle>) state;
+        for (Bottle bottle : currState) {
+            if (!bottle.isEmpty() && !bottle.containsSameColor())
                 return false;
         }
         return true;
-    }
-
-    private boolean containsSameColor(Stack<Character> bottle) {
-        Character color = peek(bottle);
-        for (Character c : bottle) {
-            if (!color.equals(c))
-                return false;
-        }
-        return true;
-    }
-
-    public boolean isEmpty(Stack<Character> bottle){
-        return (bottle.get(0) == 'e');
-    }
-
-    public Character peek(Stack<Character> bottle){
-        int nonEmptyLayers = getNonEmptyLayers(bottle);
-        return bottle.get(nonEmptyLayers - 1);
-    }
-
-    public Character pop(Stack<Character> bottle){
-        int nonEmptyLayers = getNonEmptyLayers(bottle);
-        return bottle.set(nonEmptyLayers - 1,'e');
-    }
-
-    public void push(Stack<Character> bottle, Character color){
-        int nonEmptyLayers = getNonEmptyLayers(bottle);
-        bottle.set(nonEmptyLayers,color);
-    }
-
-    public int getNonEmptyLayers(Stack<Character> bottle){
-        int nonEmptyLayers = 0;  // Number of non-empty layers in the bottle
-
-        for (Character layer : bottle) {
-            if (layer == 'e') break;    // All layers following an empty layer are also empty and require no processing.
-            nonEmptyLayers++;
-        }
-
-        return nonEmptyLayers;
     }
 
     @Override
     public List<Node> expand(Node node) {
-        List<Stack<Character>> currState = (List<Stack<Character>>) node.getState();
+        List<Bottle> currState = (List<Bottle>) node.getState();
         List<Node> children = new ArrayList<>();
         for (int i = 0; i < currState.size(); i++) {
-            if (isEmpty(currState.get(i)))
+            if (currState.get(i).isEmpty())
                 continue;
 
             for (int j = 0; j < currState.size(); j++) {
-                if(j == i)
-                    continue;
-                int nonEmptyLayers = getNonEmptyLayers(currState.get(j));
-                if (nonEmptyLayers == bottleCapacity)
+                if(j == i || currState.get(i).isFull())
                     continue;
 
                 int layersPoured = 0;
-                List<Stack<Character>> newState = copyState(currState);
-                Stack<Character> iBottle = newState.get(i), jBottle = newState.get(j);
-                while (!isEmpty(iBottle) && (isEmpty(jBottle) || peek(jBottle).equals(peek(iBottle)))) {
-                    Character color = pop(newState.get(i));
-                    push(newState.get(i), 'e');
-                    push(newState.get(i), color);
+                List<Bottle> newState = currState.stream().map(Bottle::clone).collect(Collectors.toList());
+                Bottle iBottle = newState.get(i), jBottle = newState.get(j);
+                while (!iBottle.isEmpty() && jBottle.isEmpty() || jBottle.peek().equals(iBottle.peek())) {
+                    Character color = iBottle.pop();
+                    jBottle.push(color);
                     layersPoured++;
                 }
 
@@ -137,15 +94,6 @@ public class WaterSortSearch extends GenericSearch {
             }
         }
         return children;
-    }
-
-    private List<Stack<Character>> copyState(List<Stack<Character>> state) {
-        List<Stack<Character>> newState = new Stack<>();
-
-        for (Stack<Character> bottle : state)
-            newState.add((Stack<Character>) bottle.clone());
-
-        return newState;
     }
 
     @Override

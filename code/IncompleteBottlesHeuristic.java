@@ -34,21 +34,16 @@ import java.util.*;
 
 
 public class IncompleteBottlesHeuristic implements Heuristic {
-    public boolean isComplete(List<Character> bottle) {
-        int numLayers = 0;  // Number of non-empty layers in the bottle
-
-        for (Character color : bottle) {
-            if (color == 'e') break;    // All layers following an empty layer are also empty and require no processing
-            numLayers++;
-        }
+    public boolean isComplete(Bottle bottle) {
+        int numLayers = bottle.getSize();
 
         if (numLayers == 0) // An empty bottle is trivially complete
             return true;
 
-        Character bottomMostLayer = bottle.get(0);  // Get the bottom-most layer
+        Character bottomMostLayer = bottle.getContent().get(0);  // Get the bottom-most layer
 
         for (int i = 0; i < numLayers; i++) {
-            Character layer = bottle.get(i);
+            Character layer = bottle.getContent().get(i);
 
             if (layer != bottomMostLayer)   // If two layers do not match, the bottle is incomplete
                 return false;
@@ -59,10 +54,10 @@ public class IncompleteBottlesHeuristic implements Heuristic {
 
     @Override
     public int evaluate(Node node) {
-        List<List<Character>> state = (List<List<Character>>) node.getState();  // Extract the state from the node
+        List<Bottle> state = (List<Bottle>) node.getState();  // Extract the state from the node
         int res = 0;    // Initialize an accumulator
 
-        for (List<Character> bottle : state) {  // Iterate over each bottle
+        for (Bottle bottle : state) {  // Iterate over each bottle
             if (!isComplete(bottle))    // Count the number of incomplete bottles
                 res++;
         }

@@ -39,23 +39,18 @@ import java.util.*;
 
 
 public class MisplacedLayersHeuristic implements Heuristic {
-    public int numMisplaced(List<Character> bottle) {
-        int numLayers = 0;  // Number of non-empty layers in the bottle
-
-        for (Character layer : bottle) {
-            if (layer == 'e') break;    // All layers following an empty layer are also empty and require no processing.
-            numLayers++;
-        }
+    public int numMisplaced(Bottle bottle) {
+        int numLayers = bottle.getSize();  // Number of non-empty layers in the bottle
 
         if (numLayers == 0) return 0;
 
-        Character bottomMostLayer = bottle.get(0);  // Get the color of the bottom-most layer
+        Character bottomMostLayer = bottle.getBottomLayer();  // Get the color of the bottom-most layer
 
         int cutoff = -1;    // The index at which the contiguous bottom-most block is split.
         // All layers thereafter are considered misplaced.
 
         for (int i = 0; i < numLayers; i++) // Determine cutoff
-            if (bottle.get(i) != bottomMostLayer) {
+            if (bottle.getContent().get(i) != bottomMostLayer) {
                 cutoff = i;
                 break;
             }
@@ -67,10 +62,10 @@ public class MisplacedLayersHeuristic implements Heuristic {
 
     @Override
     public int evaluate(Node node) {
-        List<List<Character>> state = (List<List<Character>>) node.getState();  // Extract the state from the node
+        List<Bottle> state = (List<Bottle>) node.getState();  // Extract the state from the node
         int res = 0;    // Initialize an accumulator
 
-        for (List<Character> bottle : state)   // Iterate over each bottle
+        for (Bottle bottle : state)   // Iterate over each bottle
             res += numMisplaced(bottle);    // Accumulate the number of misplaced layers
 
         return res;

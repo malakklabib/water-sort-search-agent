@@ -40,9 +40,9 @@ public class MostSeparatedColorHeuristic implements Heuristic {
     HashMap<Character, HashSet<Integer>> membership = new HashMap<>();
 
     // Updates `membership` for a certain bottle
-    public void computeMembershipPerBottle(List<Character> bottle, int bottleId) {
+    public void computeMembershipPerBottle(Bottle bottle, int bottleId) {
         HashSet<Integer> bottleIds; // A set is used to avoid duplicate IDs
-        for (Character layer : bottle) {
+        for (Character layer : bottle.getContent()) {
             if (layer == 'e')   // Terminate whenever an empty layer is found
                 break;
             if (membership.containsKey(layer)) {    // An entry for this color already exists
@@ -58,16 +58,16 @@ public class MostSeparatedColorHeuristic implements Heuristic {
     }
 
     // Repeat `computeMembershipPerBottle()` for all bottles
-    public void computeMemberships(List<List<Character>> state) {
+    public void computeMemberships(List<Bottle> state) {
         for (int i = 0; i < state.size(); i++) {
-            List<Character> bottle = state.get(i);
+            Bottle bottle = state.get(i);
             computeMembershipPerBottle(bottle, i);
         }
     }
 
     @Override
     public int evaluate(Node node) {
-        List<List<Character>> state = (List<List<Character>>) node.getState();  // Extract the state from the node
+        List<Bottle> state = (List<Bottle>) node.getState();  // Extract the state from the node
 
         computeMemberships(state);  // Compute the memberships
 
