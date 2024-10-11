@@ -265,6 +265,7 @@ assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1
         String solution = WaterSortSearch.solve(grid1, "GR2", false);
         solution = solution.replace(" ", "")+";";
         Checker pc = new Checker(grid1);
+        System.out.println(solution);
 assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1, solution));
     }
 

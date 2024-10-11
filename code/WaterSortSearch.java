@@ -47,7 +47,7 @@ public class WaterSortSearch extends GenericSearch {
             for (int j = bottleCapacity - 1; j >= 0; j--) {
                 char color = colors[j].charAt(0);
                 if(color!='e')
-                    bottle.push(color);
+                    bottle.push(Character.valueOf(color));
             }
             bottles.add(bottle);
         }

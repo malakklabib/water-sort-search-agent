@@ -1,5 +1,6 @@
 package code;
 
+import java.util.Objects;
 import java.util.Stack;
 
 public class Bottle {
@@ -59,6 +60,19 @@ public class Bottle {
 
     public Character getBottomLayer(){
         return content.get(0);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Bottle bottle = (Bottle) obj;
+        return bottleCapacity == bottle.bottleCapacity && content.equals(bottle.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bottleCapacity, content);
     }
 
 }
