@@ -5,16 +5,22 @@ import java.util.stream.Collectors;
 
 public class WaterSortSearch extends GenericSearch {
 
+    boolean isVisualize;
+
     public static String solve(String initialState, String strategy, boolean visualize) throws Exception {
         WaterSortSearch waterSortSearch = new WaterSortSearch();
         DepthLimitedSearch.setCutoff(-1);
         Node.setMaxDepth(0);
+        Bottle.setGlobalId(0);
+        waterSortSearch.isVisualize = visualize;
 
-        Node goalNode;
-        goalNode = waterSortSearch.search(initialState, strategy);
+        Node goalNode = waterSortSearch.search(initialState, strategy);
 
-        if(goalNode == null)
+        if (goalNode == null)
             return "NOSOLUTION";
+
+        if (waterSortSearch.isVisualize)
+            Visualizer.display((List<Bottle>) goalNode.getState(), goalNode.getDepth());
 
         List<String> actions = new ArrayList<>();
         getPlan(actions, goalNode);
@@ -26,8 +32,8 @@ public class WaterSortSearch extends GenericSearch {
         return plan + ";" + pathCost + ";" + expandedNodes;
     }
 
-    private static void getPlan(List<String> actions, Node node){
-        if(node.getParent()==null)
+    private static void getPlan(List<String> actions, Node node) {
+        if (node.getParent() == null)
             return;
 
         actions.add(0, node.getAction());
@@ -46,7 +52,7 @@ public class WaterSortSearch extends GenericSearch {
             Bottle bottle = new Bottle(bottleCapacity);
             for (int j = bottleCapacity - 1; j >= 0; j--) {
                 char color = colors[j].charAt(0);
-                if(color!='e')
+                if (color != 'e')
                     bottle.push(Character.valueOf(color));
             }
             bottles.add(bottle);
@@ -66,6 +72,10 @@ public class WaterSortSearch extends GenericSearch {
 
     @Override
     public List<Node> expand(Node node) {
+        if (isVisualize) {
+            Visualizer.display((List<Bottle>) node.getState(), node.getDepth());
+        }
+
         List<Bottle> currState = (List<Bottle>) node.getState();
         List<Node> children = new ArrayList<>();
         for (int i = 0; i < currState.size(); i++) {
@@ -73,13 +83,13 @@ public class WaterSortSearch extends GenericSearch {
                 continue;
 
             for (int j = 0; j < currState.size(); j++) {
-                if(j == i || currState.get(j).isFull())
+                if (j == i || currState.get(j).isFull())
                     continue;
 
                 int layersPoured = 0;
                 List<Bottle> newState = currState.stream().map(Bottle::clone).collect(Collectors.toList());
                 Bottle iBottle = newState.get(i), jBottle = newState.get(j);
-                while (!iBottle.isEmpty() && (jBottle.isEmpty() || jBottle.peek().equals(iBottle.peek()))) {
+                while (!iBottle.isEmpty() && (jBottle.isEmpty() || jBottle.peek().equals(iBottle.peek()) && !jBottle.isFull())) {
                     Character color = iBottle.pop();
                     jBottle.push(color);
                     layersPoured++;

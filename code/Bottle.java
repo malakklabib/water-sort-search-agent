@@ -1,5 +1,7 @@
 package code;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -7,14 +9,20 @@ public class Bottle {
     private Stack<Character> content;
     private int bottleCapacity;
 
+    static int globalId = 0;
+    int id;
+
     public Bottle(int bottleCapacity) {
         content = new Stack<>();
         this.bottleCapacity = bottleCapacity;
+        this.id = globalId;
+        globalId++;
     }
 
-    public Bottle(Stack<Character> content, int bottleCapacity) {
+    public Bottle(Stack<Character> content, int bottleCapacity, int id) {
         this.content = content;
         this.bottleCapacity = bottleCapacity;
+        this.id = id;
     }
 
     public Character peek() {
@@ -37,6 +45,14 @@ public class Bottle {
         return bottleCapacity == content.size();
     }
 
+    public static int getGlobalId() {
+        return globalId;
+    }
+
+    public static void setGlobalId(int globalId) {
+        Bottle.globalId = globalId;
+    }
+    
     public boolean containsSameColor() {
         Character color = peek();
         for (Character c : content) {
@@ -47,7 +63,7 @@ public class Bottle {
     }
 
     public Bottle clone() {
-        return new Bottle((Stack<Character>) content.clone(), bottleCapacity);
+        return new Bottle((Stack<Character>) content.clone(), bottleCapacity, this.id);
     }
 
     public Stack<Character> getContent() {
@@ -75,22 +91,56 @@ public class Bottle {
         return Objects.hash(bottleCapacity, content);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("╔═══════╗\n"); // Top of the bottle
+//    top = 1
+//    2 per layer - 1
+//    bottom 1
+//    id 1
 
-        for (int i = content.size() - 1; i >= 0; i--) { // Reverse to show top of the bottle at the top
-            sb.append("║   ").append(content.get(i)).append("   ║\n"); // Add each color inside the bottle
+    public String[] toStringArray() {
+        String[] bottleRows = new String[bottleCapacity * 2 + 2]; // Each row includes the bottle frame, content, and id
+
+        int index = 0;
+        bottleRows[index++] = "╔═══╗"; // Top of the bottle
+
+        for (int i = 0; i < bottleCapacity - content.size(); i++) {
+            bottleRows[index++] = "║   ║"; // Empty layer
+            if (i < bottleCapacity - 1)
+                bottleRows[index++] = "╟───╢"; // Horizontal break
         }
 
-        // Add empty spaces for unfilled parts of the bottle (assume max height is 4 for this example)
-        for (int i = 0; i < 4 - content.size(); i++) {
-            sb.append("║       ║\n");
+        for (int i = content.size() - 1; i >= 0; i--) { // Filled part of the bottle
+            bottleRows[index++] = "║ " + content.get(i) + " ║";
+            if (i > 0)
+                bottleRows[index++] = "╟───╢"; // Horizontal break
         }
 
-        sb.append("╚═══════╝"); // Bottom of the bottle
-        return sb.toString();
+        bottleRows[index++] = "╚═══╝"; // Bottom of the bottle
+        bottleRows[index] = String.format("  %s  ", id); // Bottle ID
+
+        return bottleRows; // Return array of strings representing the bottle
     }
+
+//    public ArrayList<String> toStringArray() {
+//        ArrayList<String> bottleRows = new ArrayList<String>(); // Each row includes the bottle frame, content, and id
+//
+//        bottleRows.add("╔═══╗"); // Top of the bottle
+//
+//        for (int i = 0; i < bottleCapacity - content.size(); i++) {
+//            bottleRows.add("║   ║"); // Empty layer
+//            if (i < bottleCapacity - 1)
+//                bottleRows.add("╟───╢"); // Horizontal break
+//        }
+//
+//        for (int i = content.size() - 1; i >= 0; i--) { // Filled part of the bottle
+//            bottleRows.add("║ " + content.get(i) + " ║");
+//            if (i > 0)
+//                bottleRows.add("╟───╢"); // Horizontal break
+//        }
+//
+//        bottleRows.add("╚═══╝"); // Bottom of the bottle
+//        bottleRows.add(String.format("  %s  ", id)); // Bottle ID
+//
+//        return bottleRows; // Return array of strings representing the bottle
+//    }
 
 }

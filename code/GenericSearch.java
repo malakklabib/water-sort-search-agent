@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class GenericSearch {
-    private int expandedNodes;
+    private int expandedNodes = 0;
 
     public abstract Object getInitialState(String problem);
 
@@ -19,7 +19,6 @@ public abstract class GenericSearch {
         Node root = new Node(initState, null, null, 0, 0);
         SearchStrategy queue = makeQueue(strategy);
         queue.add(root);
-        expandedNodes = 0;
 
         while (!queue.isEmpty()) {
             Node currNode = queue.remove();
@@ -45,7 +44,7 @@ public abstract class GenericSearch {
         if (strategy.equals("ID"))
             do {
                 goalNode = this.baseSearch(problem, strategy);
-            } while (goalNode == null && DepthLimitedSearch.getCutoff() > Node.getMaxDepth());
+            } while (goalNode == null && DepthLimitedSearch.getCutoff() <= Node.getMaxDepth());
         else
             goalNode = this.baseSearch(problem, strategy);
 

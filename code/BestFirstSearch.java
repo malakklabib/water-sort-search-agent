@@ -15,7 +15,7 @@ public abstract class BestFirstSearch implements SearchStrategy {
         } else {
             heuristic = new MostSeparatedColorHeuristic();
             // OR
-            // heuristic = new IncompleteBottlesHeuristic();
+//             heuristic = new IncompleteBottlesHeuristic();
         }
 
         pq = new PriorityQueue<>(makeComparator());   // Initialize pq using the above comparator
