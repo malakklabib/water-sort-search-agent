@@ -6,6 +6,8 @@ public class Node{
     private String action;
     private int depth;
     private int pathCost;
+    private static int maxDepth;
+
 
     public Node(Object state, Node parent, String action, int depth, int pathCost) {
         this.state = state;
@@ -13,6 +15,14 @@ public class Node{
         this.action = action;
         this.depth = depth;
         this.pathCost = pathCost;
+    }
+
+    public static int getMaxDepth() {
+        return maxDepth;
+    }
+
+    public static void setMaxDepth(int maxDepth) {
+        Node.maxDepth = maxDepth;
     }
 
     public Object getState() {
