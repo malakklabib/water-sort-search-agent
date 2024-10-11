@@ -7,12 +7,7 @@ public class UniformCostSearch implements SearchStrategy {
     private PriorityQueue<Node> pq;
 
     public UniformCostSearch(){
-        pq = new PriorityQueue<>(new Comparator<Node>() {
-            @Override
-            public int compare(Node o1, Node o2) {
-                return o1.getPathCost() - o2.getPathCost();
-            }
-        });
+        pq = new PriorityQueue<>(Comparator.comparingInt(Node::getPathCost));
     }
 
     @Override

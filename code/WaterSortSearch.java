@@ -7,6 +7,7 @@ public class WaterSortSearch extends GenericSearch {
 
     public static String solve(String initialState, String strategy, boolean visualize) throws Exception {
         WaterSortSearch waterSortSearch = new WaterSortSearch();
+
         Node goalNode;
         if (strategy.equals("ID")) {
             int depth = 0;
@@ -19,10 +20,25 @@ public class WaterSortSearch extends GenericSearch {
         } else {
             goalNode = waterSortSearch.search(initialState, strategy, null);
         }
-        // backtrack using goalNode and save operands to a string plan,
-        // sum up total cost and save to pathCost,
-        // count num of nodes expanded during search and save to nodesExpanded
-        return null;
+        if(goalNode == null)
+            return "NOSOLUTION";
+
+        List<String> actions = new ArrayList<>();
+        getPlan(actions, goalNode);
+
+        String plan = String.join(",", actions);
+        String pathCost = String.valueOf(goalNode.getPathCost());
+        String expandedNodes = String.valueOf(waterSortSearch.getExpandedNodes());
+
+        return plan + ";" + pathCost + ";" + expandedNodes;
+    }
+
+    private static void getPlan(List<String> actions, Node node){
+        if(node.getParent()==null)
+            return;
+
+        actions.add(0, node.getAction());
+        getPlan(actions, node.getParent());
     }
 
     @Override
