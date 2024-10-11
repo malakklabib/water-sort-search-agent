@@ -4,11 +4,19 @@ import java.util.Stack;
 
 public class DepthLimitedSearch implements SearchStrategy {
     private Stack<Node> stack;
-    private Integer cutoff;
+    private static int cutoff = -1;
 
-    public DepthLimitedSearch(Integer cutoff){
+    public DepthLimitedSearch(){
         stack = new Stack<>();
-        this.cutoff = cutoff;
+        DepthLimitedSearch.cutoff++;
+    }
+
+    public static int getCutoff() {
+        return cutoff;
+    }
+
+    public static void setCutoff(int cutoff) {
+        DepthLimitedSearch.cutoff = cutoff;
     }
 
     @Override
