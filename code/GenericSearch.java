@@ -12,7 +12,7 @@ public abstract class GenericSearch {
         Set<Object> seen = new HashSet<>();
         Object initState = getInitialState(problem);
         Node root =  new Node(initState, null, null, 0, 0);
-        SearchStrategy queue = makeQueue(strategy,cutoff);
+        SearchStrategy queue = makeQueue(strategy, cutoff);
         queue.add(root);
 
         while(!queue.isEmpty()){
