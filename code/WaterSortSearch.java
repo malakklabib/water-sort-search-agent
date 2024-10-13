@@ -5,25 +5,25 @@ import java.util.stream.Collectors;
 
 public class WaterSortSearch extends GenericSearch {
 
-    boolean isVisualize;
+//    boolean isVisualize;
 
     public static String solve(String initialState, String strategy, boolean visualize) throws Exception {
         WaterSortSearch waterSortSearch = new WaterSortSearch();
         DepthLimitedSearch.setCutoff(-1);
         Node.setMaxDepth(0);
         Bottle.setGlobalId(0);
-        waterSortSearch.isVisualize = visualize;
+//        waterSortSearch.isVisualize = visualize;
 
         Node goalNode = waterSortSearch.search(initialState, strategy);
 
         if (goalNode == null)
             return "NOSOLUTION";
 
-        if (waterSortSearch.isVisualize)
-            Visualizer.display((List<Bottle>) goalNode.getState(), goalNode.getDepth());
+//        if (waterSortSearch.isVisualize)
+//            Visualizer.display((List<Bottle>) goalNode.getState(), goalNode.getDepth());
 
         List<String> actions = new ArrayList<>();
-        getPlan(actions, goalNode);
+        getPlan(actions, goalNode, visualize);
 
         String plan = String.join(",", actions);
         String pathCost = String.valueOf(goalNode.getPathCost());
@@ -32,12 +32,14 @@ public class WaterSortSearch extends GenericSearch {
         return plan + ";" + pathCost + ";" + expandedNodes;
     }
 
-    private static void getPlan(List<String> actions, Node node) {
+    private static void getPlan(List<String> actions, Node node, boolean visualize) {
         if (node.getParent() == null)
             return;
 
         actions.add(0, node.getAction());
-        getPlan(actions, node.getParent());
+        getPlan(actions, node.getParent(), visualize);
+        if(visualize)
+            Visualizer.display((List<Bottle>) node.getState(), node.getDepth());
     }
 
     @Override
@@ -53,7 +55,7 @@ public class WaterSortSearch extends GenericSearch {
             for (int j = bottleCapacity - 1; j >= 0; j--) {
                 char color = colors[j].charAt(0);
                 if (color != 'e')
-                    bottle.push(Character.valueOf(color));
+                    bottle.push(color);
             }
             bottles.add(bottle);
         }
@@ -72,9 +74,9 @@ public class WaterSortSearch extends GenericSearch {
 
     @Override
     public List<Node> expand(Node node) {
-        if (isVisualize) {
-            Visualizer.display((List<Bottle>) node.getState(), node.getDepth());
-        }
+//        if (isVisualize) {
+//            Visualizer.display((List<Bottle>) node.getState(), node.getDepth());
+//        }
 
         List<Bottle> currState = (List<Bottle>) node.getState();
         List<Node> children = new ArrayList<>();

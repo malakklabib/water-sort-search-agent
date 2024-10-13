@@ -1,8 +1,6 @@
 package code;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class GenericSearch {
     private int expandedNodes = 0;
@@ -14,7 +12,8 @@ public abstract class GenericSearch {
     public abstract List<Node> expand(Node node);
 
     public Node baseSearch(String problem, String strategy) throws Exception {
-        Set<Object> seen = new HashSet<>();
+//        Set<Object> seen = new HashSet<>();
+        Map<Object, Integer> seen = new HashMap<>();
         Object initState = getInitialState(problem);
         Node root = new Node(initState, null, null, 0, 0);
         SearchStrategy queue = makeQueue(strategy);
@@ -28,11 +27,11 @@ public abstract class GenericSearch {
                 return currNode;
 
             Node.setMaxDepth(Math.max(currNode.getDepth(), Node.getMaxDepth()));
-            seen.add(currState);
+            seen.put(currState, currNode.getPathCost());
             expandedNodes++;
 
             for (Node child : expand(currNode)) {
-                if (!seen.contains(child.getState()))
+                if (!seen.containsKey(child.getState()) || seen.get(child.getState()) > child.getPathCost())
                     queue.add(child);
             }
         }
