@@ -12,6 +12,8 @@ public abstract class GenericSearch {
     public abstract List<Node> expand(Node node);
 
     public Node baseSearch(String problem, String strategy) throws Exception {
+        Bottle.setGlobalId(0);
+
 //        Set<Object> seen = new HashSet<>();
         Map<Object, Integer> seen = new HashMap<>();
         Object initState = getInitialState(problem);

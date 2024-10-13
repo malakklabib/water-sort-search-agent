@@ -11,7 +11,6 @@ public class WaterSortSearch extends GenericSearch {
         WaterSortSearch waterSortSearch = new WaterSortSearch();
         DepthLimitedSearch.setCutoff(-1);
         Node.setMaxDepth(0);
-        Bottle.setGlobalId(0);
 //        waterSortSearch.isVisualize = visualize;
 
         Node goalNode = waterSortSearch.search(initialState, strategy);
