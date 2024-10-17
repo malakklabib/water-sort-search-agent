@@ -41,17 +41,12 @@ public class MostSeparatedColorHeuristic implements Heuristic {
 
     // Updates `membership` for a certain bottle
     public void computeMembershipPerBottle(Bottle bottle, int bottleId) {
-        HashSet<Integer> bottleIds; // A set is used to avoid duplicate IDs
-        for (Character layer : bottle.getContent()) {
-            if (membership.containsKey(layer)) {    // An entry for this color already exists
-                // Get the set containing the IDs of the bottle of which this color is a member
-                bottleIds = membership.get(layer);
-            } else {
-                // This color was not encountered before
-                bottleIds = new HashSet<>();    // Initialize an empty set
-                membership.put(layer, bottleIds);   // Add an entry for this color in `membership`
+        for (int i = 0; i < bottle.getContent().size(); i++) {
+            Character layer = bottle.getContent().get(i);
+
+            if (!isHomogenousWithBottom(bottle, i)) {
+                addMember(layer, bottleId);
             }
-            bottleIds.add(bottleId);    // Add the ID of the bottle at hand to the set of IDs of the color at hand
         }
     }
 
@@ -63,20 +58,45 @@ public class MostSeparatedColorHeuristic implements Heuristic {
         }
     }
 
+    public void addMember(Character layer, int bottleId) {
+        HashSet<Integer> bottleIds; // A set is used to avoid duplicate IDs
+
+        if (membership.containsKey(layer)) {    // An entry for this color already exists
+            // Get the set containing the IDs of the bottle of which this color is a member
+            bottleIds = membership.get(layer);
+        } else {
+            // This color was not encountered before
+            bottleIds = new HashSet<>();    // Initialize an empty set
+            membership.put(layer, bottleIds);   // Add an entry for this color in `membership`
+        }
+
+        bottleIds.add(bottleId);    // Add the ID of the bottle at hand to the set of IDs of the color at hand
+    }
+
+    public boolean isHomogenousWithBottom(Bottle bottle, int i) {
+        for (int j = i - 1; j >= 0; j--)
+            if (bottle.getContent().get(i) != bottle.getContent().get(j)) return false;
+
+        return true;
+    }
+
+
     @Override
     public int evaluate(Node node) {
         List<Bottle> state = (List<Bottle>) node.getState();  // Extract the state from the node
 
         computeMemberships(state);  // Compute the memberships
 
+        if (membership.entrySet().isEmpty())
+            return 0;
+
         // Get the pair <Color, BottleIDs> corresponding to the most separated color, i.e., the one with the
         // longest `BottleIDs` by computing the maximum amongst BottleIDs according to length
-        Map.Entry<Character, HashSet<Integer>> longestPair = Collections.max(membership.entrySet(),
-                (e1, e2) -> Integer.compare(e1.getValue().size(), e2.getValue().size()));
+        Map.Entry<Character, HashSet<Integer>> longestPair = Collections.max(membership.entrySet(), (e1, e2) -> Integer.compare(e1.getValue().size(), e2.getValue().size()));
 
         Character mostSeparatedColor = longestPair.getKey();    // Get the most separated color
-        int numSeparations = longestPair.getValue().size();  // Get the number of bottles it is spread across
 
-        return numSeparations - 1;
+        // Get the number of bottles it is spread across
+        return longestPair.getValue().size();
     }
 }

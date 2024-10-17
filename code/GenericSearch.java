@@ -1,11 +1,9 @@
 package code;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class GenericSearch {
-    private int expandedNodes;
+    private int expandedNodes = 0;
 
     public abstract Object getInitialState(String problem);
 
@@ -14,12 +12,14 @@ public abstract class GenericSearch {
     public abstract List<Node> expand(Node node);
 
     public Node baseSearch(String problem, String strategy) throws Exception {
-        Set<Object> seen = new HashSet<>();
+        Bottle.setGlobalId(0);
+
+//        Set<Object> seen = new HashSet<>();
+        Map<Object, Integer> seen = new HashMap<>();
         Object initState = getInitialState(problem);
         Node root = new Node(initState, null, null, 0, 0);
         SearchStrategy queue = makeQueue(strategy);
         queue.add(root);
-        expandedNodes = 0;
 
         while (!queue.isEmpty()) {
             Node currNode = queue.remove();
@@ -29,11 +29,11 @@ public abstract class GenericSearch {
                 return currNode;
 
             Node.setMaxDepth(Math.max(currNode.getDepth(), Node.getMaxDepth()));
-            seen.add(currState);
+            seen.put(currState, currNode.getPathCost());
             expandedNodes++;
 
             for (Node child : expand(currNode)) {
-                if (!seen.contains(child.getState()))
+                if (!seen.containsKey(child.getState()) || seen.get(child.getState()) > child.getPathCost())
                     queue.add(child);
             }
         }
@@ -45,7 +45,7 @@ public abstract class GenericSearch {
         if (strategy.equals("ID"))
             do {
                 goalNode = this.baseSearch(problem, strategy);
-            } while (goalNode == null && DepthLimitedSearch.getCutoff() > Node.getMaxDepth());
+            } while (goalNode == null && DepthLimitedSearch.getCutoff() <= Node.getMaxDepth());
         else
             goalNode = this.baseSearch(problem, strategy);
 

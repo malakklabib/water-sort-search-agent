@@ -1,5 +1,7 @@
 package code;
 
+import java.util.Objects;
+
 public class Node{
     private Object state;
     private Node parent;
@@ -43,4 +45,17 @@ public class Node{
     public int getPathCost() {
         return pathCost;
     }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) return true;
+//        if (obj == null || getClass() != obj.getClass()) return false;
+//        Node node = (Node) obj;
+//        return state == node.state;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(state);
+//    }
 }
