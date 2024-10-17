@@ -134,6 +134,7 @@ assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid1
     public void testc0() throws Exception {
         String solution = WaterSortSearch.solve(grid0, "UC", false);
         solution = solution.replace(" ", "")+";";
+        System.out.println(solution);
         Checker pc = new Checker(grid0);
         assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(grid0, solution));
     }
