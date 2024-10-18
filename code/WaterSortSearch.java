@@ -12,21 +12,6 @@ private static volatile boolean running = true;  // Flag to stop monitoring
 
 
     public static String solve(String initialState, String strategy, boolean visualize) throws Exception {
-        // Get the Java runtime
-        Runtime runtime = Runtime.getRuntime();
-
-        // Run garbage collector to get a clean slate
-        runtime.gc();
-
-        // Memory usage before the algorithm
-        long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
-
-        // Get the OperatingSystemMXBean instance
-        OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
-
-        // CPU usage before the algorithm
-        double cpuBefore = osBean.getProcessCpuLoad() * 100;
-
         // Start a separate thread to monitor CPU and memory utilization
         Thread monitorThread = new Thread(WaterSortSearch::monitorUtilization);
         monitorThread.start();
