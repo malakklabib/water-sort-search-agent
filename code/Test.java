@@ -158,8 +158,9 @@ public class Test {
         // 10;4;b,p,g,p;b,o,p,r;p,o,g,p;g,o,p,y;p,y,b,o;r,c,b,c;y,r,r,g;c,b,p,b;y,b,b,c;e,e,e,e;e,e,e,e    --> optimal 41
 //        String problem = "16;6;h,h,p,t,y,o;o,b,m,z,z,g;a,o,h,s,y,m;n,k,y,r,m,r;p,n,t,r,o,t;e,t,e,m,n,g;p,p,s,p,k,n;r,e,k,e,z,k;t,z,m,s,s,b;b,b,h,m,t,g;z,y,g,y,k,r;z,p,g,h,b,o;a,n,s,y,b,o;s,k,n,r,g,h;e,e,e,e,e,e;e,e,e,e,e,e;";
         // "5;4;r,b,r,g;y,g,b,y;b,y,g,r;e,e,e,e;e,e,e,e;" --> OPTIMAL 10 --> BFS OPTIMAL
-        String problem = "7;4;r,g,b,y;p,o,g,r;y,b,o,p;e,e,e,e;r,p,o,b;e,e,e,e;e,e,e,e;";  // --> 12
-        String solution = WaterSortSearch.solve(problem, "ID", true);
+        //7;4;r,g,b,y;p,o,g,r;y,b,o,p;e,e,e,e;r,p,o,b;e,e,e,e;e,e,e,e;";  // --> 12
+        String problem = "5;4;r,b,r,g;y,g,b,y;b,y,g,r;e,e,e,e;e,e,e,e;";
+        String solution = WaterSortSearch.solve(problem, "AS2", false);
         System.out.println(solution);
 
 

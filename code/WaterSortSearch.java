@@ -1,19 +1,49 @@
 package code;
 
+import java.lang.management.ManagementFactory;
+import com.sun.management.OperatingSystemMXBean;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class WaterSortSearch extends GenericSearch {
 
 //    boolean isVisualize;
+private static volatile boolean running = true;  // Flag to stop monitoring
+
 
     public static String solve(String initialState, String strategy, boolean visualize) throws Exception {
+        // Get the Java runtime
+        Runtime runtime = Runtime.getRuntime();
+
+        // Run garbage collector to get a clean slate
+        runtime.gc();
+
+        // Memory usage before the algorithm
+        long memoryBefore = runtime.totalMemory() - runtime.freeMemory();
+
+        // Get the OperatingSystemMXBean instance
+        OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+
+        // CPU usage before the algorithm
+        double cpuBefore = osBean.getProcessCpuLoad() * 100;
+
+        // Start a separate thread to monitor CPU and memory utilization
+        Thread monitorThread = new Thread(WaterSortSearch::monitorUtilization);
+        monitorThread.start();
+
         WaterSortSearch waterSortSearch = new WaterSortSearch();
         DepthLimitedSearch.setCutoff(-1);
         Node.setMaxDepth(0);
 //        waterSortSearch.isVisualize = visualize;
 
         Node goalNode = waterSortSearch.search(initialState, strategy);
+
+        // Wait for 1 second to get an accurate CPU reading
+        Thread.sleep(1000);
+
+        // Stop the monitoring once the algorithm finishes
+        running = false;
+        monitorThread.join();  // Wait for the monitoring thread to finish
 
         if (goalNode == null)
             return "NOSOLUTION";
@@ -29,6 +59,31 @@ public class WaterSortSearch extends GenericSearch {
         String expandedNodes = String.valueOf(waterSortSearch.getExpandedNodes());
 
         return plan + ";" + pathCost + ";" + expandedNodes;
+    }
+
+    public static void monitorUtilization() {
+        Runtime runtime = Runtime.getRuntime();
+        OperatingSystemMXBean osBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        long memoryUsed = Long.MIN_VALUE;
+        double cpuLoad = Double.MIN_VALUE;
+        while (running) {
+
+            // Memory utilization
+            memoryUsed = Math.max(runtime.totalMemory() - runtime.freeMemory(),memoryUsed);
+
+            // CPU utilization
+            cpuLoad = Math.max(osBean.getProcessCpuLoad() * 100,cpuLoad);  // Get CPU usage in percentage
+
+            try {
+                // Monitor every 1 second
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+
+        System.out.println("Memory used: " + memoryUsed / (1024 * 1024) + " MB");
+        System.out.println("CPU usage: " + cpuLoad + "%");
     }
 
     private static void getPlan(List<String> actions, Node node, boolean visualize) {
